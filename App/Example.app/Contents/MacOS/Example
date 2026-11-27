@@ -1,0 +1,2 @@
+#!/bin/sh
+/usr/bin/osascript -e 'display dialog "Hello from Example.app - drag me to Applications." buttons {"OK"} default button "OK" with title "Example"'

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 800" width="1400" height="800">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f5f7fb"/>
+      <stop offset="1" stop-color="#d7e0ee"/>
+    </linearGradient>
+  </defs>
+  <rect width="1400" height="800" fill="url(#g)"/>
+  <text x="700" y="120" font-family="Helvetica, Arial, sans-serif" font-size="42" fill="#37474f" text-anchor="middle">Drag the app to Applications</text>
+  <path d="M560 400 h280 v-40 l70 70 -70 70 v-40 h-280 z" fill="#ef6c00" opacity="0.85"/>
+</svg>
