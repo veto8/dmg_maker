@@ -39,7 +39,7 @@ if [ -f "$ROOT/background.svg" ]; then
   fi
 fi
 
-hdiutil create -fs HFS+ -srcfolder "$STAGE" -volname "$VOLNAME" -format UDR -o "$DMG_TMP" >/dev/null
+hdiutil create -fs HFS+J -srcfolder "$STAGE" -volname "$VOLNAME" -format UDR -o "$DMG_TMP" >/dev/null
 
 MOUNT=$(hdiutil attach "$DMG_TMP" -readwrite -noverify -noautoopen | awk -F'\t' '/\/Volumes\//{print $NF}')
 

@@ -25,7 +25,7 @@ the app onto the `Applications` symlink.
 ## Build (on macOS)
 
 ```sh
-./ask.sh          # task 1 builds dist/Example.dmg
+./ask.sh          # menu: setup / build / clean
 # or directly:
 ./make_dmg.sh [App/Example.app] [dist/Example.dmg]
 ```
@@ -38,4 +38,5 @@ run on Linux.
 - `make_dmg.sh` — builds the drag-to-install DMG
 - `background.svg` — window background (rasterized to PNG via `qlmanage`)
 - `App/Example.app` — sample app to package
-- `ask.sh` — task runner (build / clean)
+- `ask.sh` — task switch
+- `ask.d/` — task scripts (setup / build / clean)

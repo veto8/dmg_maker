@@ -18,8 +18,9 @@ Example project that builds a **drag-to-install DMG** (app icon + arrow to an
 
 | ID | Task |
 |----|------|
-| 1 | Build `dist/Example.dmg` from `App/Example.app` |
-| 2 | Clean `.build/` and `dist/` |
+| 1 | Setup - check requirements (`hdiutil`, `qlmanage`, `osascript`) |
+| 2 | Build `dist/Example.dmg` from `App/Example.app` |
+| 3 | Clean `.build/` and `dist/` |
 
 `make_dmg.sh [app] [out]` can also be run directly. Optional env `VOLNAME`
 (default `Example`).
@@ -29,7 +30,8 @@ Example project that builds a **drag-to-install DMG** (app icon + arrow to an
 - `make_dmg.sh` — create image, mount, set Finder layout via AppleScript, convert
 - `background.svg` — window background, rasterized by `qlmanage`
 - `App/Example.app` — sample app bundle (`Contents/Info.plist` + `MacOS/Example`)
-- `ask.sh` — task switch (build / clean)
+- `ask.sh` — task switch
+- `ask.d/` — task scripts (`setup.sh`, `build.sh`, `clean.sh`)
 
 ## Conventions
 

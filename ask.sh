@@ -6,8 +6,9 @@ show_menu() {
   printf "%s\n" '  ┌─────┬──────────────────────────────────────────────┐'
   printf "%s\n" '  │  ID │ Description                                  │'
   printf "%s\n" '  ├─────┼──────────────────────────────────────────────┤'
-  printf "%s\n" '  │  1  │ Build - create dist/Example.dmg (macOS)      │'
-  printf "%s\n" '  │  2  │ Clean - remove .build and dist               │'
+  printf "%s\n" '  │  1  │ Setup - check/install requirements (macOS)   │'
+  printf "%s\n" '  │  2  │ Build - create dist/Example.dmg (macOS)      │'
+  printf "%s\n" '  │  3  │ Clean - remove .build and dist               │'
   printf "%s\n" '  │  0  │ Exit                                         │'
   printf "%s\n" '  └─────┴──────────────────────────────────────────────┘'
 }
@@ -26,11 +27,11 @@ while true; do
   fi
 
   if [ "$task" = "1" ]; then
-    printf "...building DMG\n"
-    cd "$SCRIPT_DIR" && ./make_dmg.sh
+    "$SCRIPT_DIR/ask.d/setup.sh"
   elif [ "$task" = "2" ]; then
-    printf "...cleaning\n"
-    rm -rf "$SCRIPT_DIR/.build" "$SCRIPT_DIR/dist"
+    "$SCRIPT_DIR/ask.d/build.sh"
+  elif [ "$task" = "3" ]; then
+    "$SCRIPT_DIR/ask.d/clean.sh"
   else
     printf "  Unknown task: %s\n" "$task"
   fi
