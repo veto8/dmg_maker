@@ -13,13 +13,12 @@ VOLNAME="${VOLNAME:-Example}"
 APPNAME=$(basename "$APP")
 APPNAME=${APPNAME%.app}
 
-BUILD="$ROOT/.build"
-rm -rf "$BUILD"
-mkdir -p "$BUILD" "$(dirname "$OUT")"
+BUILD=$(mktemp -d "${TMPDIR:-/tmp}/dmg_maker.XXXXXX")
+mkdir -p "$(dirname "$OUT")"
 rm -f "$OUT"
 
 STAGE="$BUILD/src"
-DMG_TMP="$BUILD/tmp.dmg"
+DMG_RW="$BUILD/tmp_rw.dmg"
 MOUNT=""
 
 cleanup() {
@@ -28,20 +27,29 @@ cleanup() {
 }
 trap cleanup EXIT
 
+mkdir -p "$STAGE"
 cp -R "$APP" "$STAGE/"
 ln -s /Applications "$STAGE/Applications"
 
 mkdir -p "$STAGE/.background"
-if [ -f "$ROOT/background.svg" ]; then
-  qlmanage -t -s 1400 -o "$STAGE/.background" "$ROOT/background.svg" >/dev/null 2>&1 || true
+if [ -f "$ROOT/background_adium.png" ]; then
+  cp "$ROOT/background_adium.png" "$STAGE/.background/background.png"
+elif [ -f "$ROOT/background.png" ]; then
+  cp "$ROOT/background.png" "$STAGE/.background/background.png"
+elif [ -f "$ROOT/background.svg" ]; then
+  qlmanage -t -s 460 -o "$STAGE/.background" "$ROOT/background.svg" >/dev/null 2>&1 || true
   if [ -f "$STAGE/.background/background.svg.png" ]; then
     mv "$STAGE/.background/background.svg.png" "$STAGE/.background/background.png"
   fi
 fi
 
-hdiutil create -fs HFS+J -srcfolder "$STAGE" -volname "$VOLNAME" -format UDR -o "$DMG_TMP" >/dev/null
+SIZE_MB=$(du -sm "$STAGE" | awk '{print $1}')
+SIZE_MB=$((SIZE_MB + 32))
 
-MOUNT=$(hdiutil attach "$DMG_TMP" -readwrite -noverify -noautoopen | awk -F'\t' '/\/Volumes\//{print $NF}')
+hdiutil create -size "${SIZE_MB}m" -fs HFS+J -volname "$VOLNAME" "$DMG_RW" >/dev/null
+
+MOUNT=$(hdiutil attach "$DMG_RW" -readwrite -noverify -noautoopen | awk -F'\t' '/\/Volumes\//{print $NF}')
+cp -Rp "$STAGE"/. "$MOUNT"/
 
 osascript <<EOF
 tell application "Finder"
@@ -50,14 +58,14 @@ tell application "Finder"
     set current view of container window to icon view
     set toolbar visible of container window to false
     set statusbar visible of container window to false
-    set the bounds of container window to {240, 160, 840, 560}
+    set the bounds of container window to {200, 120, 800, 520}
     set theViewOptions to the icon view options of container window
     set arrangement of theViewOptions to not arranged
-    set icon size of theViewOptions to 128
+    set icon size of theViewOptions to 96
     set label position of theViewOptions to bottom
     set background picture of theViewOptions to file ".background:background.png"
-    set position of item "$APPNAME.app" of container window to {160, 280}
-    set position of item "Applications" of container window to {440, 280}
+    set position of item "$APPNAME.app" of container window to {160, 245}
+    set position of item "Applications" of container window to {440, 245}
     close
     open
     update without registering applications
@@ -69,6 +77,6 @@ EOF
 hdiutil detach "$MOUNT" -force >/dev/null
 MOUNT=""
 
-hdiutil convert "$DMG_TMP" -format UDZO -o "$OUT" >/dev/null
+hdiutil convert "$DMG_RW" -format UDZO -o "$OUT" >/dev/null
 
 printf "wrote %s\n" "$OUT"
